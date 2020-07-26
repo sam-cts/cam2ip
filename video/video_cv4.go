@@ -22,6 +22,7 @@ type Video struct {
 	opts  Options
 	video *gocv.VideoCapture
 	frame *gocv.Mat
+	image image.Image
 }
 
 // New returns new Video for given path.
@@ -37,7 +38,24 @@ func New(opts Options) (video *Video, err error) {
 		err = fmt.Errorf("video: can not open video %s: %s", opts.Filename, err.Error())
 	}
 
+	go video.StartStream()
+
 	return
+}
+
+func (v *Video) GetImage() image.Image {
+	return v.image
+}
+
+func (v *Video) StartStream() {
+	// var img image.Image
+	var err error
+	for {
+		v.image, err = v.Read()
+		if err != nil {
+			return
+		}
+	}
 }
 
 // Read reads next frame from video and returns image.

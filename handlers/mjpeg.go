@@ -56,11 +56,13 @@ loop:
 				continue
 			}
 
-			img, err := m.reader.Read()
-			if err != nil {
-				log.Printf("mjpeg: read: %v", err)
-				continue
-			}
+			// img, err := m.reader.Read()
+			// if err != nil {
+			// 	log.Printf("mjpeg: read: %v", err)
+			// 	continue
+			// }
+
+			img := m.reader.GetImage()
 
 			err = image.NewEncoder(partWriter).Encode(img)
 			if err != nil {

@@ -20,6 +20,7 @@ type Camera struct {
 	opts   Options
 	camera *gocv.VideoCapture
 	frame  *gocv.Mat
+	image  image.Image
 }
 
 // New returns new Camera for given camera index.
@@ -38,7 +39,24 @@ func New(opts Options) (camera *Camera, err error) {
 	camera.SetProperty(PropFrameWidth, opts.Width)
 	camera.SetProperty(PropFrameHeight, opts.Height)
 
+	go camera.StartStream()
+
 	return
+}
+
+func (c *Camera) GetImage() image.Image {
+	return c.image
+}
+
+func (c *Camera) StartStream() {
+	// var img image.Image
+	var err error
+	for {
+		c.image, err = c.Read()
+		if err != nil {
+			return
+		}
+	}
 }
 
 // Read reads next frame from camera and returns image.
