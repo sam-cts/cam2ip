@@ -29,13 +29,15 @@ func (j *JPEG) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Cache-Control", "no-store, no-cache")
 	w.Header().Add("Content-Type", "image/jpeg")
 
-	img, err := j.reader.Read()
-	if err != nil {
-		log.Printf("jpeg: read: %v", err)
-		return
-	}
+	// img, err := j.reader.Read()
+	// if err != nil {
+	// 	log.Printf("jpeg: read: %v", err)
+	// 	return
+	// }
 
-	err = image.NewEncoder(w).Encode(img)
+	img := j.reader.GetImage()
+
+	err := image.NewEncoder(w).Encode(img)
 	if err != nil {
 		log.Printf("jpeg: encode: %v", err)
 		return

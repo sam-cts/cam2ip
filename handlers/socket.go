@@ -35,11 +35,13 @@ func (s *Socket) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 
 	for {
-		img, err := s.reader.Read()
-		if err != nil {
-			log.Printf("socket: read: %v", err)
-			break
-		}
+		// img, err := s.reader.Read()
+		// if err != nil {
+		// 	log.Printf("socket: read: %v", err)
+		// 	break
+		// }
+
+		img := s.reader.GetImage()
 
 		w := new(bytes.Buffer)
 
