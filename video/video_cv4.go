@@ -19,10 +19,10 @@ type Options struct {
 
 // Video represents video.
 type Video struct {
-	opts  Options
-	video *gocv.VideoCapture
-	frame *gocv.Mat
-	image image.Image
+	opts    Options
+	video   *gocv.VideoCapture
+	frame   *gocv.Mat
+	imgchan chan image.Image
 }
 
 // New returns new Video for given path.
@@ -44,17 +44,19 @@ func New(opts Options) (video *Video, err error) {
 }
 
 func (v *Video) GetImage() image.Image {
-	return v.image
+	return <-v.imgchan
 }
 
 func (v *Video) StartStream() {
 	// var img image.Image
 	var err error
+	var img image.Image
 	for {
-		v.image, err = v.Read()
+		img, err = v.Read()
 		if err != nil {
 			return
 		}
+		v.imgchan <- img
 	}
 }
 

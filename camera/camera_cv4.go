@@ -17,10 +17,10 @@ import (
 
 // Camera represents camera.
 type Camera struct {
-	opts   Options
-	camera *gocv.VideoCapture
-	frame  *gocv.Mat
-	image  image.Image
+	opts    Options
+	camera  *gocv.VideoCapture
+	frame   *gocv.Mat
+	imgchan chan image.Image
 }
 
 // New returns new Camera for given camera index.
@@ -45,17 +45,19 @@ func New(opts Options) (camera *Camera, err error) {
 }
 
 func (c *Camera) GetImage() image.Image {
-	return c.image
+	return <-c.imgchan
 }
 
 func (c *Camera) StartStream() {
 	// var img image.Image
 	var err error
+	var img image.Image
 	for {
-		c.image, err = c.Read()
+		img, err = c.Read()
 		if err != nil {
 			return
 		}
+		c.imgchan <- img
 	}
 }
 
